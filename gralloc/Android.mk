@@ -39,24 +39,6 @@ LOCAL_SHARED_LIBRARIES        := $(common_libs) libqdMetaData libdl  \
                                   android.hardware.graphics.mapper@4.0
 LOCAL_CFLAGS                  := $(common_flags) -DLOG_TAG=\"qdgralloc\" -Wno-sign-conversion \
                                  -D__QTI_DISPLAY_GRALLOC__
-
-ifeq ($(TARGET_USES_YCRCB_CAMERA_PREVIEW),true)
-    LOCAL_CFLAGS              += -DUSE_YCRCB_CAMERA_PREVIEW
-else ifeq ($(TARGET_USES_YCRCB_VENUS_CAMERA_PREVIEW),true)
-    LOCAL_CFLAGS              += -DUSE_YCRCB_CAMERA_PREVIEW_VENUS
-endif
-
-ifeq ($(TARGET_USES_UNALIGNED_NV21_ZSL),true)
-    LOCAL_CFLAGS              += -DUSE_UNALIGNED_NV21_ZSL
-endif
-ifeq ($(TARGET_USES_UNALIGNED_YCRCB),true)
-    LOCAL_CFLAGS              += -DUSE_UNALIGNED_YCRCB
-endif
-
-ifeq ($(TARGET_NEEDS_RAW10_BUFFER_FIX),true)
-LOCAL_CFLAGS                  += -DRAW10_BUFFER_FIX
-endif
-
 LOCAL_ADDITIONAL_DEPENDENCIES := $(common_deps)
 LOCAL_SRC_FILES               := gr_utils.cpp gr_adreno_info.cpp
 include $(BUILD_SHARED_LIBRARY)

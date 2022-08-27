@@ -1001,9 +1001,6 @@ void GetAlignedWidthAndHeight(const BufferInfo &info, unsigned int *alignedw,
   // Below should be only YUV family
   switch (format) {
     case HAL_PIXEL_FORMAT_YCrCb_420_SP:
-#ifdef USE_UNALIGNED_YCRCB
-      break;
-#endif
     case HAL_PIXEL_FORMAT_YCbCr_420_SP:
       if (AdrenoMemInfo::GetInstance() == nullptr) {
         return;
@@ -1020,18 +1017,10 @@ void GetAlignedWidthAndHeight(const BufferInfo &info, unsigned int *alignedw,
       aligned_w = ALIGN(width, 16);
       break;
     case HAL_PIXEL_FORMAT_RAW12:
-#ifdef RAW10_BUFFER_FIX
-      aligned_w = ALIGN(width * 12 / 8, 8);
-#else
       aligned_w = ALIGN(width * 12 / 8, 16);
-#endif
       break;
     case HAL_PIXEL_FORMAT_RAW10:
-#ifdef RAW10_BUFFER_FIX
-      aligned_w = ALIGN(width * 10 / 8, 8);
-#else
       aligned_w = ALIGN(width * 10 / 8, 16);
-#endif
       break;
     case HAL_PIXEL_FORMAT_RAW8:
       aligned_w = ALIGN(width, 16);
@@ -1075,10 +1064,8 @@ void GetAlignedWidthAndHeight(const BufferInfo &info, unsigned int *alignedw,
     case HAL_PIXEL_FORMAT_RAW_OPAQUE:
       break;
     case HAL_PIXEL_FORMAT_NV21_ZSL:
-#ifndef USE_UNALIGNED_NV21_ZSL
       aligned_w = ALIGN(width, 64);
       aligned_h = ALIGN(height, 64);
-#endif
       break;
     case HAL_PIXEL_FORMAT_NV12_HEIF:
       aligned_w = INT(VENUS_Y_STRIDE(COLOR_FMT_NV12_512, width));
@@ -1348,13 +1335,7 @@ int GetImplDefinedFormat(uint64_t usage, int format) {
       if (format == HAL_PIXEL_FORMAT_YCbCr_420_888) {
         gr_format = HAL_PIXEL_FORMAT_NV21_ZSL;  // NV21
       } else {
-#ifdef USE_YCRCB_CAMERA_PREVIEW
-        gr_format = HAL_PIXEL_FORMAT_YCrCb_420_SP;  // NV21 preview
-#elif USE_YCRCB_CAMERA_PREVIEW_VENUS
-        gr_format = HAL_PIXEL_FORMAT_YCrCb_420_SP_VENUS;  // NV21 preview
-#else
         gr_format = HAL_PIXEL_FORMAT_YCbCr_420_SP_VENUS;  // NV12 preview
-#endif
       }
     } else if (usage & BufferUsage::COMPOSER_OVERLAY) {
       // XXX: If we still haven't set a format, default to RGBA8888
